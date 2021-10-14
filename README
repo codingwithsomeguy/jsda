@@ -1,0 +1,31 @@
+# JS Direct App (JSDA)
+
+Mostly tongue-in-cheek proof of concept for direct JS multiplatform graphics drawing. Connects JerryScript with SDL.
+
+Don't bother fuzzing or reporting security issues, there was no attempt to avoid boundary / size issues.
+
+Instructions that likely won't be very helpful and are untested:
+```
+git clone https://github.com/jerryscript-project/jerryscript.git
+jerryscript/tools/build.py --builddir=$(pwd)/example_build --cmake-param="-DCMAKE_INSTALL_PREFIX=$(pwd)/example_install/" --jerry-math ON
+
+# libsdl2:
+curl -O https://www.libsdl.org/release/SDL2-2.0.16.tar.gz
+tar -xzf SDL2-2.0.16.tar.gz
+./configure --prefix THEPREVDIR/libsdl
+make -j11
+make install
+cd ..
+
+
+export PKG_CONFIG_PATH="$(pwd)/example_install/lib/pkgconfig/:$(pwd)/libsdl/lib/pkgconfig"
+# verify with:
+# pkg-config --cflags --libs libjerry-core libjerry-port-default libjerry-ext sdl2
+
+gcc jsda.c -o jsda $(pkg-config --cflags --libs libjerry-core libjerry-port-default sdl2) -lm
+./jsda # executes jsdatest.js
+```
+
+
+
+More on https://twitch.tv/SomeCodingGuy

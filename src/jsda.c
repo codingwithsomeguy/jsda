@@ -2,15 +2,17 @@
 #include <SDL.h>
 
 
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
+
 // TODO: get rid of this, manage window with the JS lifecycle
 SDL_Window *window = NULL;
+
 
 static jerry_value_t drawPixelHandler(
                 const jerry_call_info_t *call_info_p,
                 const jerry_value_t arguments[],
                 const jerry_length_t argument_count) {
-
-    SDL_Log("drawPixelHandler: # args %d", argument_count);
 
     if (argument_count == 3) {
         uint32_t x = jerry_value_as_uint32(arguments[0]);
@@ -18,13 +20,19 @@ static jerry_value_t drawPixelHandler(
         uint32_t urgb = jerry_value_as_uint32(arguments[2]);
 
         if (window == NULL) {
-            printf("SDL Window was undefined, ignoring draw\n");
+            SDL_Log("drawPixelHandler: SDL Window was undefined, ignoring draw");
+            return jerry_create_undefined();
+        }
+
+        if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT) {
+            SDL_Log("drawPixelHandler: ignoring draw past screen bounds");
+            return jerry_create_undefined();
         }
 
         SDL_Surface *surface = SDL_GetWindowSurface(window);
         if (surface == NULL) {
             SDL_Log("Surface Error: %s", SDL_GetError());
-            return 1;
+            return jerry_create_undefined();
         }
 
         SDL_LockSurface(surface);
@@ -48,7 +56,7 @@ static jerry_value_t sleepHandler(
                 const jerry_call_info_t *call_info_p,
                 const jerry_value_t arguments[],
                 const jerry_length_t argument_count) {
-    SDL_Log("sleepHandler: invoked");
+    //SDL_Log("sleepHandler: invoked");
     if (argument_count == 1) {
         uint32_t t = jerry_value_as_uint32(arguments[0]);
         SDL_Delay(t);
@@ -106,7 +114,7 @@ int main(void) {
     window = SDL_CreateWindow(
         "JSDA Graphics",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        640, 480,
+        SCREEN_WIDTH, SCREEN_HEIGHT,
         0);
         //SDL_WINDOW_OPENGL);
     if (window == NULL) {

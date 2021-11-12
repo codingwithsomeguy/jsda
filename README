@@ -4,8 +4,11 @@ Mostly tongue-in-cheek proof of concept for direct JS multiplatform graphics dra
 
 Don't bother fuzzing or reporting security issues, there was no attempt to avoid boundary / size issues.
 
-Instructions that likely won't be very helpful and are untested:
+Instructions that likely won't be very helpful and are barely tested:
 ```
+git submodule init
+git submodule update
+
 python3 ./jerryscript/tools/build.py --builddir=$(pwd)/build/jerryscriptbuild --cmake-param="-DCMAKE_INSTALL_PREFIX=$(pwd)/build/jerryscript" --jerry-math ON --install "$(pwd)/build/jerryscript"
 
 

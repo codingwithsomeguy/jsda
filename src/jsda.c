@@ -12,11 +12,10 @@ static jerry_value_t drawPixelHandler(
 
     SDL_Log("drawPixelHandler: # args %d", argument_count);
 
-    if (argument_count == 2) {
-        //jerry_value_t rawX = jerry_value_to_number(arguments[0]);
+    if (argument_count == 3) {
         uint32_t x = jerry_value_as_uint32(arguments[0]);
         uint32_t y = jerry_value_as_uint32(arguments[1]);
-        //jerry_release_value(rawX);
+        uint32_t urgb = jerry_value_as_uint32(arguments[2]);
 
         if (window == NULL) {
             printf("SDL Window was undefined, ignoring draw\n");
@@ -29,19 +28,12 @@ static jerry_value_t drawPixelHandler(
         }
 
         SDL_LockSurface(surface);
-        //size_t x = 540, y = 20;
         // TODO: get the pixel format
         const Uint8 pixelSize = (Uint8)(surface->pitch / surface->w);
-        //printf("pixelSize is %d\n", pixelSize);
         Uint8 *pixel = surface->pixels + (y * surface->pitch) + (x * sizeof(Uint8) * pixelSize);
-        /* for (size_t i = 0 ; i < 100 ; ++i) {
-            pixel[0] = 0xFF;
-            pixel[1] = 0xFF;
-            pixel[2] = 0xFF;
-            pixel[3] = 0xFF;
-            pixel += pixelSize;
-        } */
-        pixel[0] = 0xFF; pixel[1] = 0xFF; pixel[2] = 0xFF;
+        pixel[0] = (urgb & 0x00FF0000) >> 16;
+        pixel[1] = (urgb & 0x0000FF00) >> 8;
+        pixel[2] = (urgb & 0x000000FF);
 
         SDL_UnlockSurface(surface);
         SDL_UpdateWindowSurface(window);

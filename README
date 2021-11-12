@@ -6,24 +6,25 @@ Don't bother fuzzing or reporting security issues, there was no attempt to avoid
 
 Instructions that likely won't be very helpful and are untested:
 ```
-git clone https://github.com/jerryscript-project/jerryscript.git
-jerryscript/tools/build.py --builddir=$(pwd)/example_build --cmake-param="-DCMAKE_INSTALL_PREFIX=$(pwd)/example_install/" --jerry-math ON
+python3 ./jerryscript/tools/build.py --builddir=$(pwd)/build/jerryscriptbuild --cmake-param="-DCMAKE_INSTALL_PREFIX=$(pwd)/build/jerryscript" --jerry-math ON --install "$(pwd)/build/jerryscript"
+
 
 # libsdl2:
-curl -O https://www.libsdl.org/release/SDL2-2.0.16.tar.gz
-tar -xzf SDL2-2.0.16.tar.gz
-./configure --prefix THEPREVDIR/libsdl
+mkdir build/libsdlbuild build/libsdl
+cd build/libsdlbuild
+../../SDL/configure --prefix "$(builtin cd ../libsdl; pwd)"
 make -j11
 make install
-cd ..
+cd ../..
 
 
-export PKG_CONFIG_PATH="$(pwd)/example_install/lib/pkgconfig/:$(pwd)/libsdl/lib/pkgconfig"
+export PKG_CONFIG_PATH="$(pwd)/build/jerryscript/lib/pkgconfig/:$(pwd)/build/libsdl/lib/pkgconfig"
 # verify with:
 # pkg-config --cflags --libs libjerry-core libjerry-port-default libjerry-ext sdl2
 
-gcc jsda.c -o jsda $(pkg-config --cflags --libs libjerry-core libjerry-port-default sdl2) -lm
-./jsda # executes jsdatest.js
+cd src
+gcc jsda.c -o ../build/jsda $(pkg-config --cflags --libs libjerry-core libjerry-port-default sdl2) -lm
+../build/jsda      # executes jsdatest.js
 ```
 
 

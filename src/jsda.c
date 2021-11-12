@@ -1,5 +1,5 @@
-#include "jerryscript.h"
-#include "SDL.h"
+#include <jerryscript.h>
+#include <SDL.h>
 
 
 // TODO: get rid of this, manage window with the JS lifecycle
@@ -112,7 +112,7 @@ int main(void) {
     }
 
     window = SDL_CreateWindow(
-        "TRDP Graphics",
+        "JSDA Graphics",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
         640, 480,
         0);
